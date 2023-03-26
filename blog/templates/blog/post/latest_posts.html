@@ -1,0 +1,24 @@
+
+<!-- Latest -->
+<div class="tab-pane fade" id="pills-trending" role="tabpanel" aria-labelledby="pills-trending-tab">
+    <div class="post-entry-1 border-bottom">
+        {% for post in recent_posts %}
+        <div class="post-meta">
+            <span class="date">
+                {% for tag in post.tags.all %}
+                <a href="{% url 'blog:post_list_by_tag' tag.slug %}">{{ tag.name }}</a>
+                {% if not forloop.last %}, {% endif %}
+                {% empty %}
+                    <p>No tags yet.</p>
+                {% endfor %}
+            </span> 
+            <span class="mx-1">&bullet;</span> <span>{{ post.publish }}</span>
+        </div>
+        <h2 class="mb-2"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+        <span class="author mb-3 d-block">{{ post.author }}</span>
+        {% empty %}
+        <p>No posts yet.</p>
+        {% endfor %}
+    </div>
+</div> 
+<!-- End Latest -->

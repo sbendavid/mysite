@@ -1,24 +1,124 @@
 {% extends "blog/base.html" %}
+{% load static %}
+{% load blog_tags %}
 
 {% block title %}My Blog{% endblock %}
 
 {% block content %}
-    <h1>My Blog</h1>
-    {% if tag %}
-        <h2>Posts tagged with "{{ tag.name }}"</h2>
-    {% endif %}
-    {% for post in posts %}
-        <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
-        <p class="tags">
-            Tags: 
-            {% for tag in post.tags.all %}
-                <a href="{% url 'blog:post_list_by_tag' tag.slug %}">{{ tag.name }}</a>
-                {% if not forloop.last %}, {% endif %}
-            {% endfor %}
-        </p>
-        <p class="date">Published {{ post.publish }} by {{ post.author }}</p>
-        {{ post.body|truncatewords:30|linebreaks }}
-    {% endfor %}
+
+    <!-- ======= Hero Slider Section ======= -->
+    <section id="hero-slider" class="hero-slider">
+        <div class="container-md" data-aos="fade-in">
+          <div class="row">
+            <div class="col-12">
+              <div class="swiper sliderFeaturedPosts">
+                <div class="swiper-wrapper">
+                  <div class="swiper-slide">
+                    <a href="single-post.html" class="img-bg d-flex align-items-end" style="background-image: url('{% static 'blog/img/post-slide-1.jpg' %}');">
+                      <div class="img-bg-inner">
+                        <h2>The Best Homemade Masks for Face (keep the Pimples Away)</h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem neque est mollitia! Beatae minima assumenda repellat harum vero, officiis ipsam magnam obcaecati cumque maxime inventore repudiandae quidem necessitatibus rem atque.</p>
+                      </div>
+                    </a>
+                  </div>
+  
+                  <div class="swiper-slide">
+                    <a href="single-post.html" class="img-bg d-flex align-items-end" style="background-image: url('{% static 'blog/img/post-slide-2.jpg' %}');">
+                      <div class="img-bg-inner">
+                        <h2>17 Pictures of Medium Length Hair in Layers That Will Inspire Your New Haircut</h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem neque est mollitia! Beatae minima assumenda repellat harum vero, officiis ipsam magnam obcaecati cumque maxime inventore repudiandae quidem necessitatibus rem atque.</p>
+                      </div>
+                    </a>
+                  </div>
+  
+                  <div class="swiper-slide">
+                    <a href="single-post.html" class="img-bg d-flex align-items-end" style="background-image: url('{% static 'blog/img/post-slide-3.jpg' %}');">
+                      <div class="img-bg-inner">
+                        <h2>13 Amazing Poems from Shel Silverstein with Valuable Life Lessons</h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem neque est mollitia! Beatae minima assumenda repellat harum vero, officiis ipsam magnam obcaecati cumque maxime inventore repudiandae quidem necessitatibus rem atque.</p>
+                      </div>
+                    </a>
+                  </div>
+  
+                  <div class="swiper-slide">
+                    <a href="single-post.html" class="img-bg d-flex align-items-end" style="background-image: url('{% static 'blog/img/post-slide-4.jpg' %}');">
+                      <div class="img-bg-inner">
+                        <h2>9 Half-up/half-down Hairstyles for Long and Medium Hair</h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem neque est mollitia! Beatae minima assumenda repellat harum vero, officiis ipsam magnam obcaecati cumque maxime inventore repudiandae quidem necessitatibus rem atque.</p>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+                <div class="custom-swiper-button-next">
+                  <span class="bi-chevron-right"></span>
+                </div>
+                <div class="custom-swiper-button-prev">
+                  <span class="bi-chevron-left"></span>
+                </div>
+  
+                <div class="swiper-pagination">
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </section>
+    <!-- End Hero Slider Section -->
+
     
+    
+
+    {% if tag %}
+        <h2 class="mb-4 display-4">Posts tagged with "{{ tag.name }}"</h2>
+    {% endif %}
+
+    <!-- ======= Post Grid Section ======= -->
+<section id="posts" class="posts">
+    <div class="container" data-aos="fade-up">
+        <h1 class="display-4"></h1>
+        <div class="section-header d-flex justify-content-between align-items-center mb-5">
+            <h2>Recent Posts</h2>
+            <div><a href="category.html" class="more">See All Posts</a></div>
+        </div>
+        <div class="row">
+            <div class="col-md-9">
+                {% for post in posts %}
+                <div class="d-lg-flex post-entry-2">
+                    <a href="{{ post.get_absolute_url }}" class="me-4 thumbnail mb-4 mb-lg-0 d-inline-block">
+                        <img src="{% static 'blog/img/post-landscape-6.jpg' %}" alt="" class="img-fluid">
+                    </a>
+                    <div>
+                        <div class="post-meta">
+                            <span class="date">
+                            {% for tag in post.tags.all %}
+                            <a href="{% url 'blog:post_list_by_tag' tag.slug %}">{{ tag.name }}</a>
+                            {% endfor %}
+                            </span> 
+                            <span class="mx-1">&bullet;</span> 
+                            <span>{{ post.publish }}</span>
+                        </div>
+                        <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+                        <p>{{ post.body|markdown|truncatewords_html:30 }}</p>
+                        <div class="d-flex align-items-center author">
+                            <div class="photo"><img src="{% static 'blog/img/person-2.jpg' %}" alt="" class="img-fluid"></div>
+                            <div class="name">
+                                <h3 class="m-0 p-0">{{ post.author }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="col-md-3">
+                {% include 'blog/sidebar.html' %}
+            </div>
+        </div> 
+    </div>
+</section>
+    <!-- End Post Grid Section -->
+
     {% include "pagination.html" with page=posts %}
+    
 {% endblock %}
+

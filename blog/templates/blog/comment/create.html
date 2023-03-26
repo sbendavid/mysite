@@ -1,4 +1,4 @@
-{% extends "blog/base.html" %}
+<!-- {% extends "blog/base.html" %}
 
 {% block title %}New comment{% endblock %}
 
@@ -9,4 +9,67 @@
         {{ form }}
         <input type="submit" value="Add comment">
     </form>
+{% endblock %} -->
+
+
+{% extends "blog/base.html" %}
+
+{% block title %}New comment{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">New comment for post "{{ post.title }}"</div>
+                    <div class="card-body">
+                    <form method="POST" action=".">
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label for="name" class="col-md-4 col-form-label text-md-right">Name</label>
+                            <div class="col-md-6">
+                                <input id="name" type="text" class="form-control" name="name" value="{{ form.name.value }}" required autofocus>
+                                {% if form.name.errors %}
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ form.name.errors|join:", " }}</strong>
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="email" class="col-md-4 col-form-label text-md-right">Email</label>
+                            <div class="col-md-6">
+                                <input id="email" type="email" class="form-control" name="email" value="{{ form.email.value }}" required>
+                                {% if form.email.errors %}
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ form.email.errors|join:", " }}</strong>
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="body" class="col-md-4 col-form-label text-md-right">Comment</label>
+
+                            <div class="col-md-6">
+                                <textarea id="body" class="form-control" name="body" required>{{ form.body.value }}</textarea>
+                                {% if form.body.errors %}
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ form.body.errors|join:", " }}</strong>
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group row mb-0">
+                            <div class="col-md-8 offset-md-4">
+                                <button type="submit" class="btn btn-primary">
+                                    Add comment
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
