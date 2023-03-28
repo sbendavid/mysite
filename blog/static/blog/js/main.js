@@ -152,3 +152,30 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 });
+
+
+$(function() {
+  // When the search form is submitted
+  $('form.search-form').on('submit', function(event) {
+    event.preventDefault(); // Prevent the form from submitting normally
+
+    // Get the search query from the input field
+    var query = $('#search-input').val();
+
+    // Make an AJAX request to your server to get the search results
+    $.ajax({
+      url: '{% url "blog:post_search" %}',
+      data: {
+        'query': query
+      },
+      dataType: 'json',
+      success: function(data) {
+        // Clear the search input field
+        $('#search-input').val('');
+
+        // Replace the search results section with the new search results
+        $('#search-results').html(data.html);
+      }
+    });
+  });
+});

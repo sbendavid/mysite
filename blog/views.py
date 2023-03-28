@@ -3,13 +3,13 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView
-# from django.contrib.postgres.search import SearchVector
+from django.contrib.postgres.search import SearchVector
 
 from taggit.models import Tag
 
 from .forms import CommentForm, EmailPostForm, SearchForm
 from .models import Comment, Post
-# from haystack.query import SearchQuerySet
+from haystack.query import SearchQuerySet
 
 
 def post_list(request, tag_slug=None):
@@ -31,7 +31,11 @@ def post_list(request, tag_slug=None):
         # If page is out of range, deliver the last page of results.
         posts = paginator.page(paginator.num_pages)
 
-    context = {'page': page, 'posts': posts, 'tag': tag}
+    context = {
+        'page': page, 
+        'posts': posts, 
+        'tag': tag
+        }
     return render(request, 'blog/post/list.html', context)
 
 
@@ -69,7 +73,8 @@ def post_detail(request, year, month, day, post):
             new_comment = form.save(commit=False)
             new_comment.post = post
             new_comment.save()
-            return redirect('post_detail', post_id=post.id)
+            return redirect('blog:post_detail', year=post.publish.year, month=post.publish.month, day=post.publish.day, post=post.slug)
+
     else:
         form = CommentForm()
 
@@ -89,7 +94,6 @@ def post_detail(request, year, month, day, post):
         'similar_posts': similar_posts,
     }
     return render(request, 'blog/post/detail.html', context)
-
 
 def post_share(request, post_id):
     post = get_object_or_404(Post, id=post_id, status='published')
@@ -115,21 +119,23 @@ def post_search(request):
     form = SearchForm()
     query = None
     results = []
+    total_results = 0
+    cd = {} 
 
     if 'query' in request.GET:
         form = SearchForm(request.GET)
         if form.is_valid():
-            # cd = form.cleaned_data
+            cd = form.cleaned_data
             query = form.cleaned_data['query']
             results = Post.objects.annotate(
                 search=SearchVector('title', 'body'),).filter(search=query)
-            # results = SearchQuerySet().models(Post).filter(content=cd['query']).load_all()
+            results = SearchQuerySet().models(Post).filter(content=cd['query']).load_all()
             # count total results
             total_results = results.count()
 
     context = {
         'form': form, 
-        # 'cd': cd, 
+        'cd': cd, 
         'query': query,
         'results': results, 
         'total_results': total_results
